@@ -26,20 +26,7 @@ class RowX
 
   def initialize(txt)
 
-    a3 = txt.split(/(?:\n|^\-+$)\n/)
-    # get the fields
-    a4 = a3.map{|x| x.scan(/\w+(?=:)/)}.flatten(1).uniq
-    a5 = a3.map do |xlines|
-
-      missing_fields = a4 - xlines.scan(/^\w+(?=:)/)
-      r = xlines.lines.map(&:strip)
-      r += missing_fields.map{|x| x + ":"}
-      r.sort.join("\n")
-
-    end
-    a6 = a5.join("\n\n")
-
-    a = LineTree.new(a6).to_a
+    a = LineTree.new(txt.gsub(/^-*$/m,'')).to_a
      
     keyfield = a[0][0][/\w+/]; i = 0
 
@@ -53,7 +40,7 @@ class RowX
     summary = scan_a a.slice!(0,i)
 
     summary[0] = 'summary'
-    @to_a = ['root', '', {}] + [summary] + scan_records(records)    
+    @to_a = ['root', '', {}] + [summary] + scan_records(records)
     @to_xml = Rexle.new(@to_a).xml pretty: true
 
   end
