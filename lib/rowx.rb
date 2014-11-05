@@ -40,7 +40,7 @@ class RowX
     summary = scan_a a.slice!(0,i)
 
     summary[0] = 'summary'
-    @to_a = ['root', '', {}] + [summary] + scan_records(records)
+    @to_a = ['root', '', {}] + [summary] + scan_records(records)    
     @to_xml = Rexle.new(@to_a).xml pretty: true
 
   end
@@ -68,7 +68,12 @@ class RowX
   end
 
   def scan_records(row)
-    row.map {|x| scan_a x }
+    
+    row.map do |x|
+      
+      x.map! {|y| y.length <= 1 ? y : y.join("\n")}
+      scan_a x 
+    end
   end
 
 end
