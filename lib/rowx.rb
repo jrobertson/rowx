@@ -5,7 +5,7 @@
 require 'line-tree'
 require 'rexle'
 
-class Array
+lass Array
   def collate(pattern=nil)
     a = self.inject([[]]) do |r,x|
       if block_given? then  
@@ -24,10 +24,10 @@ class RowX
 
   attr_reader :to_a, :to_xml
 
-  def initialize(txt)
+  def initialize(txt, level: nil)
+    
+    a = LineTree.new(txt.gsub(/^-*$/m,''), level: level).to_a
 
-    a = LineTree.new(txt.gsub(/^-*$/m,'')).to_a
-     
     keyfield = a[0][0][/\w+/]; i = 0
 
     while a.select {|x| x[0][/#{keyfield}/]}.length <= 1 and i < a.length
@@ -40,12 +40,13 @@ class RowX
     summary = scan_a a.slice!(0,i)
 
     summary[0] = 'summary'
-    @to_a = ['root', '', {}] + [summary] + scan_records(records)    
+    @to_a = ['root', '', {}] + [summary] + scan_records(records, level)
     @to_xml = Rexle.new(@to_a).xml pretty: true
 
   end
 
   private
+  
 
   def scan_a(row)
 
@@ -67,13 +68,10 @@ class RowX
     ['item', '', {}]  + a
   end
 
-  def scan_records(row)
+  def scan_records(row, level)
     
-    row.map do |x|
-      
-      x.map! {|y| y.length <= 1 ? y : y.join("\n")}
-      scan_a x 
-    end
+    row.map {|x| scan_a x }
+
   end
 
 end
