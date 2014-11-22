@@ -5,7 +5,7 @@
 require 'line-tree'
 require 'rexle'
 
-lass Array
+class Array
   def collate(pattern=nil)
     a = self.inject([[]]) do |r,x|
       if block_given? then  
@@ -57,8 +57,7 @@ class RowX
       name ||= 'description'
 
       children = scan_a(field[1..-1]) if field[-1] .is_a?(Array) 
-      value = value.to_s.strip
-      value = ['![', value, {}] if value[/[<>]/] 
+      value = value.to_s.strip.gsub('<','&lt;').gsub('>','&gt;')
         
       result = [name, value, {}]
       result << children if children
