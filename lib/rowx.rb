@@ -28,9 +28,9 @@ class RowX
     
     a = LineTree.new(txt.gsub(/^-*$/m,''), level: level).to_a
 
-    keyfield = a[0][0][/\w+/]; i = 0
+    keyfield = a[0][0][/\w+:/]; i = 0
 
-    while a.select {|x| x[0][/#{keyfield}/]}.length <= 1 and i < a.length
+    while a.select {|x| x[0][/^#{keyfield}/]}.length <= 1 and i < a.length
       i += 1
       keyfield = a[i][0][/\w+/] 
     end  
@@ -41,6 +41,7 @@ class RowX
 
     summary[0] = 'summary'
     @to_a = ['root', '', {}] + [summary] + scan_records(records, level)
+    
     @to_xml = Rexle.new(@to_a).xml pretty: true
 
   end
