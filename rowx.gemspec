@@ -1,11 +1,11 @@
 Gem::Specification.new do |s|
   s.name = 'rowx'
-  s.version = '0.3.0'
+  s.version = '0.3.1'
   s.summary = 'rowx'
   s.description = 'Generates XML from rows of labelled, nested, and plain text' 
     s.authors = ['James Robertson']
   s.files = Dir['lib/**/*.rb']
-  s.add_runtime_dependency('line-tree', '~> 0.5', '>=0.5.5')
+  s.add_runtime_dependency('line-tree', '~> 0.5', '>=0.5.0')
   s.add_runtime_dependency('rexle', '~> 1.2', '>=1.2.0') 
   s.signing_key = '../privatekeys/rowx.pem'
   s.cert_chain  = ['gem-public_cert.pem']
