@@ -27,7 +27,6 @@ class RowX
   def initialize(txt, level: nil)
     
     a = LineTree.new(txt.gsub(/^-*$/m,''), level: level).to_a
-    puts 'a : ' + a.inspect
 
     keyfield = a[0][0][/\w+:/]; i = 0
 

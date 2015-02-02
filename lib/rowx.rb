@@ -40,8 +40,8 @@ class RowX
     summary = scan_a a.slice!(0,i)
 
     summary[0] = 'summary'
-    @to_a = ['root', '', {}] + [summary] + scan_records(records, level)
-    
+    @to_a = ['root', {}] + [summary] + scan_records(records, level)
+
     @to_xml = Rexle.new(@to_a).xml pretty: true
 
   end
@@ -60,12 +60,12 @@ class RowX
       children = scan_a(field[1..-1]) if field[-1] .is_a?(Array) 
       value = value.to_s.strip.gsub('<','&lt;').gsub('>','&gt;')
         
-      result = [name, value, {}]
+      result = [name, {}, value]
       result << children if children
       result
     end
 
-    ['item', '', {}]  + a
+    ['item', {}, '' ]  + a
   end
 
   def scan_records(row, level)
