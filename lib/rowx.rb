@@ -3,7 +3,7 @@
 # file: rowx.rb
 
 require 'line-tree'
-require 'rexle'
+
 
 class Array
   def collate(pattern=nil)
@@ -26,10 +26,11 @@ class RowX
 
   def initialize(txt, level: nil)
     
-    a = LineTree.new(txt.gsub(/^-*$/m,''), level: level).to_a
-
+    a = LineTree.new(txt.gsub(/^-*$/m,''), level: level, ignore_blank_lines: false).to_a
     keyfield = a[0][0][/\w+:/]; i = 0
 
+    # find the keyfield. if there's only 1 keyfield in all of the rows it's 
+    # not a keyfield. Keep searching until all rows have been searched
     while a.select {|x| x[0][/^#{keyfield}/]}.length <= 1 and i < a.length
       i += 1
       keyfield = a[i][0][/\w+/] 
@@ -54,6 +55,9 @@ class RowX
     a = row.map do |field|
 
       s = field.is_a?(Array) ? field[0] : field
+
+      return if s.empty?
+      
       value, name = s.split(':',2).reverse
       name ||= 'description'
 
