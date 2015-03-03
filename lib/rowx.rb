@@ -26,7 +26,8 @@ class RowX
 
   def initialize(txt, level: nil)
     
-    a = LineTree.new(txt.gsub(/^-*$/m,''), level: level, ignore_blank_lines: false).to_a
+    a = LineTree.new(txt.gsub(/^-*$/m,''), \
+                                level: level, ignore_blank_lines: false).to_a
     keyfield = a[0][0][/\w+:/]; i = 0
 
     # find the keyfield. if there's only 1 keyfield in all of the rows it's 
@@ -60,9 +61,15 @@ class RowX
       
       value, name = s.split(':',2).reverse
       name ||= 'description'
-
+      
       children = scan_a(field[1..-1]) if field[-1] .is_a?(Array) 
-      value = value.to_s.strip.gsub('<','&lt;').gsub('>','&gt;')
+      value = value.to_s.strip.gsub('<','&lt;').gsub('>','&gt;')      
+
+      # it's a line which has been commented out?
+      if name[0] == '#' then
+        value = name[1..-1] + ': ' + value
+        name = '!-' 
+      end
         
       result = [name, {}, value]
       result << children if children
