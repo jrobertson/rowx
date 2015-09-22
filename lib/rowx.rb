@@ -28,20 +28,25 @@ class RowX
     
     a = LineTree.new(txt.gsub(/^-*$/m,''), \
                                 level: level, ignore_blank_lines: false).to_a
+    
     keyfield = a[0][0][/\w+:/]; i = 0
 
     # find the keyfield. if there's only 1 keyfield in all of the rows it's 
     # not a keyfield. Keep searching until all rows have been searched
-    while a.select {|x| x[0][/^#{keyfield}/]}.length <= 1 and i < a.length
+    while a.select {|x| x[0][/^#{keyfield}/]}.length <= 1 and \
+                                                      i < a.length and a[i+1]
+      
       i += 1
-      keyfield = a[i][0][/\w+/] 
-    end  
+      keyfield = a[i][0][/\w+/]
+
+    end
 
     keyfield = a[0][0][/\w+/] if i == a.length - 1
     records = a[i..-1].collate { |x| x.first =~ /^#{keyfield  }/ }
     summary = scan_a a.slice!(0,i)
 
     summary[0] = 'summary'
+    
     @to_a = ['root', {}] + [summary] + scan_records(records, level)
 
     @to_xml = Rexle.new(@to_a).xml pretty: true
