@@ -1,10 +1,3 @@
-#!/usr/bin/env ruby
-
-# file: rowx.rb
-
-require 'line-tree'
-
-
 class Array
   def collate(pattern=nil)
     a = self.inject([[]]) do |r,x|
@@ -42,6 +35,7 @@ class RowX
     end
 
     keyfield = a[0][0][/\w+/] if i == a.length - 1
+    i = 0 if a.flatten(1).grep(/^#{keyfield}/).length == 1 # only 1 record
     records = a[i..-1].collate { |x| x.first =~ /^#{keyfield  }/ }
     summary = scan_a a.slice!(0,i)
 
