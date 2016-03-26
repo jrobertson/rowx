@@ -1,19 +1,31 @@
-class Array
-  def collate(pattern=nil)
-    a = self.inject([[]]) do |r,x|
-      if block_given? then  
-        yield(x) ? r << [x] : r[-1] << x        
-      else
-        x =~ pattern ? r << [x] : r[-1] << x
-      end # block
-      r
-    end
-    a.shift if a.first.empty?
-    a
-  end 
+#!/usr/bin/env ruby
+
+# file: rowx.rb
+
+require 'line-tree'
+
+
+
+module ArrayCollate
+  refine Array do
+    def collate(pattern=nil)
+      a = self.inject([[]]) do |r,x|
+        if block_given? then  
+          yield(x) ? r << [x] : r[-1] << x        
+        else
+          x =~ pattern ? r << [x] : r[-1] << x
+        end # block
+        r
+      end
+      a.shift if a.first.empty?
+      a
+    end 
+  end
 end
 
 class RowX
+  
+  using ArrayCollate
 
   attr_reader :to_a, :to_xml
 
