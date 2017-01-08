@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'rowx'
-  s.version = '0.5.0'
+  s.version = '0.5.1'
   s.summary = 'rowx'
   s.description = 'Generates XML from rows of labelled text, nested text, and plain text' 
   s.authors = ['James Robertson']
@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.signing_key = '../privatekeys/rowx.pem'
   s.cert_chain  = ['gem-public_cert.pem']
   s.license = 'MIT'
-  s.email = 'james@r0bertson.co.uk'
+  s.email = 'james@jamesrobertson.eu'
   s.homepage = 'https://github.com/jrobertson/rowx'
   s.required_ruby_version = '>= 2.1.2'
 end

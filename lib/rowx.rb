@@ -2,9 +2,17 @@
 
 # file: rowx.rb
 
-require 'line-tree'
+#require 'line-tree'
+require 'requestor'
 
+code = Requestor.read('http://rorbuilder.info/r/ruby') do |x|
+  x.require 'line-tree'
+end
 
+eval code
+
+# for an example of ArrayCollate 
+# see http://www.jamesrobertson.eu/snippets/2014/jun/08/collating-items-in-an-array.html
 
 module ArrayCollate
   refine Array do
@@ -27,7 +35,7 @@ class RowX
   
   using ArrayCollate
 
-  attr_reader :to_a, :to_xml
+  attr_reader :to_a, :to_xml, :to_lines
 
   def initialize(txt, level: nil)
     
@@ -47,16 +55,21 @@ class RowX
     end
 
     keyfield = a[0][0][/\w+/] if i == a.length - 1
+
     i = 0 if a.flatten(1).grep(/^#{keyfield}/).length == 1 # only 1 record
     records = a[i..-1].collate { |x| x.first =~ /^#{keyfield  }/ }
     summary = scan_a a.slice!(0,i)
 
     summary[0] = 'summary'
     
-    @to_a = ['root', {}] + [summary] + scan_records(records, level)
-
+    @rexle_a = scan_records(records, level)
+    @to_a = ['root', {}] + [summary] + @rexle_a
     @to_xml = Rexle.new(@to_a).xml pretty: true
 
+  end
+  
+  def to_lines(delimiter: ' # ')
+    @rexle_a.map {|x| x[3..-1].map {|y| y[2]}.join(delimiter)}.join("\n").lines
   end
 
   private
