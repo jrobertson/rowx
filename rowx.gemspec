@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'rowx'
-  s.version = '0.5.1'
+  s.version = '0.5.3'
   s.summary = 'rowx'
   s.description = 'Generates XML from rows of labelled text, nested text, and plain text' 
   s.authors = ['James Robertson']

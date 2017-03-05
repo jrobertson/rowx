@@ -2,14 +2,8 @@
 
 # file: rowx.rb
 
-#require 'line-tree'
-require 'requestor'
+require 'line-tree'
 
-code = Requestor.read('http://rorbuilder.info/r/ruby') do |x|
-  x.require 'line-tree'
-end
-
-eval code
 
 # for an example of ArrayCollate 
 # see http://www.jamesrobertson.eu/snippets/2014/jun/08/collating-items-in-an-array.html
@@ -39,9 +33,24 @@ class RowX
 
   def initialize(txt, level: nil)
     
-    a = LineTree.new(txt.gsub(/^-*$/m,''), \
-                                level: level, ignore_blank_lines: false).to_a
+    # auto indent any multiline values   
     
+    indent = ''
+
+    lines = txt.gsub(/^-+$/m,'').lines.map do |line|
+
+      if not line[/^\s*\w+:|^\s+/] then
+        indent + '  ' + line
+      else
+        indent = line[/^\s+/] || ''
+        line
+      end
+
+    end
+
+    a = LineTree.new(lines.join, level: level, ignore_blank_lines: false).to_a
+
+
     keyfield = a[0][0][/\w+:/]; i = 0
 
     # find the keyfield. if there's only 1 keyfield in all of the rows it's 
@@ -58,6 +67,7 @@ class RowX
 
     i = 0 if a.flatten(1).grep(/^#{keyfield}/).length == 1 # only 1 record
     records = a[i..-1].collate { |x| x.first =~ /^#{keyfield  }/ }
+
     summary = scan_a a.slice!(0,i)
 
     summary[0] = 'summary'
@@ -82,8 +92,10 @@ class RowX
       s = field.is_a?(Array) ? field[0] : field
 
       return if s.empty?
-      
-      value, name = s.split(':',2).reverse
+
+      found = s.match(/^(\w+):\s*(.*)/m)      
+
+      value, name = found ? found.captures.reverse : s      
       name ||= 'description'
       
       children = scan_a(field[1..-1]) if field[-1] .is_a?(Array) 
@@ -103,9 +115,9 @@ class RowX
     ['item', {}, '' ]  + a
   end
 
-  def scan_records(row, level)
+  def scan_records(rows, level)
     
-    row.map {|x| scan_a x }
+    rows.map {|x| scan_a x }
 
   end
 
