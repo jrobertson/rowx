@@ -39,10 +39,10 @@ class RowX
 
     lines = txt.gsub(/^-+$/m,'').lines.map do |line|
 
-      if not line[/^\s*\w+:|^\s+/] then
+      if not line[/^ *\w+:|^ +/] then
         indent + '  ' + line
       else
-        indent = line[/^\s+/] || ''
+        indent = line[/^ +/] || ''
         line
       end
 
