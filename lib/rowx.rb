@@ -5,6 +5,9 @@
 require 'line-tree'
 
 
+class RowXException < Exception
+end
+
 # for an example of ArrayCollate 
 # see http://www.jamesrobertson.eu/snippets/2014/jun/08/collating-items-in-an-array.html
 
@@ -31,7 +34,8 @@ class RowX
 
   attr_reader :to_a, :to_xml, :to_lines
 
-  def initialize(txt, level: nil)
+  def initialize(txt, level: nil, ignore_blank_lines: false, 
+                 abort_1_row: false)
     
     # auto indent any multiline values   
     
@@ -48,7 +52,8 @@ class RowX
 
     end
 
-    a = LineTree.new(lines.join, level: level, ignore_blank_lines: false).to_a
+    a = LineTree.new(lines.join, level: level, 
+                     ignore_blank_lines: ignore_blank_lines).to_a
 
 
     keyfield = a[0][0][/\w+:/]; i = 0
@@ -65,11 +70,14 @@ class RowX
 
     keyfield = a[0][0][/\w+/] if i == a.length - 1
 
-    i = 0 if a.flatten(1).grep(/^#{keyfield}/).length == 1 # only 1 record
+    if a.flatten(1).grep(/^#{keyfield}/).length == 1 then # only 1 record
+      i = 0 
+      raise RowXException, 'Expected more than 1 row' if abort_1_row
+    end
+
     records = a[i..-1].collate { |x| x.first =~ /^#{keyfield  }/ }
 
     summary = scan_a a.slice!(0,i)
-
     summary[0] = 'summary'
     
     @rexle_a = scan_records(records, level)
