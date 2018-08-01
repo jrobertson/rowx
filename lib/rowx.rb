@@ -35,7 +35,9 @@ class RowX
   attr_reader :to_a, :to_xml, :to_lines
 
   def initialize(txt, level: nil, ignore_blank_lines: false, 
-                 abort_1_row: false)
+                 abort_1_row: false, debug: true)
+    
+    @debug = debug
     
     # auto indent any multiline values   
     
@@ -51,10 +53,12 @@ class RowX
       end
 
     end
+    
+    puts 'lines: ' + lines.inspect if @debug
 
     a = LineTree.new(lines.join, level: level, 
-                     ignore_blank_lines: ignore_blank_lines).to_a
-
+                     ignore_blank_lines: ignore_blank_lines, debug: debug).to_a
+    puts 'a: ' + a.inspect if @debug
 
     keyfield = a[0][0][/\w+:/]; i = 0
 
