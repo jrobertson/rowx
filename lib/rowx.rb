@@ -31,13 +31,14 @@ end
 class RowX
   
   using ArrayCollate
+  using ColouredText  
 
   attr_reader :to_a, :to_xml, :to_lines
 
   def initialize(txt, level: nil, ignore_blank_lines: false, 
-                 abort_1_row: false, debug: true)
-    
-    @debug = debug
+                 abort_1_row: false, debug: false, name: 'item')
+     
+    @name, @debug = name, debug
     
     # auto indent any multiline values   
     
@@ -58,7 +59,7 @@ class RowX
 
     a = LineTree.new(lines.join, level: level, 
                      ignore_blank_lines: ignore_blank_lines, debug: debug).to_a
-    puts 'a: ' + a.inspect if @debug
+    puts ('a: ' + a.inspect).debug if @debug
 
     keyfield = a[0][0][/\w+:/]; i = 0
 
@@ -124,7 +125,7 @@ class RowX
       result
     end
 
-    ['item', {}, '' ]  + a
+    [@name, {}, '' ]  + a
   end
 
   def scan_records(rows, level)
