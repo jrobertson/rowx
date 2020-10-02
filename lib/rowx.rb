@@ -106,7 +106,7 @@ class RowX
 
       return if s.empty?
 
-      found = s.match(/^(\w+):\s+(.*)/m)      
+      found = s.match(/^(\w+):(?:\s*|\n)(.*)/m)      
 
       value, name = found ? found.captures.reverse : s      
       name ||= 'description'
