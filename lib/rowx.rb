@@ -101,12 +101,13 @@ class RowX
   def scan_a(row)
 
     a = row.map do |field|
-
+      
+      puts 'field: ' + field.inspect if @debug
       s = field.is_a?(Array) ? field[0] : field
 
       return if s.empty?
-
-      found = s.match(/^(\w+):(?:\s*|\n)(.*)/m)      
+      puts 's: ' + s.inspect if @debug
+      found = s.match(/^(\w+)(?:\:$|\:\s+)(.*)/m)      
 
       value, name = found ? found.captures.reverse : s      
       name ||= 'description'
