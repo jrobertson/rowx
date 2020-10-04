@@ -36,7 +36,8 @@ class RowX
   attr_reader :to_a, :to_xml, :to_lines
 
   def initialize(txt, level: nil, ignore_blank_lines: false, 
-                 abort_1_row: false, debug: false, name: 'item')
+                 abort_1_row: false, debug: false, name: 'item', 
+                 allow_lonely_keyfield: false)
      
     @name, @debug = name, debug
     
@@ -62,17 +63,22 @@ class RowX
     puts ('a: ' + a.inspect).debug if @debug
 
     keyfield = a[0][0][/\w+:/]; i = 0
+    puts ('keyfield: ' + keyfield.inspect).debug if @debug
 
-    # find the keyfield. if there's only 1 keyfield in all of the rows it's 
-    # not a keyfield. Keep searching until all rows have been searched
-    while a.select {|x| x[0][/^#{keyfield}/]}.length <= 1 and \
-                                                      i < a.length and a[i+1]
+    if not allow_lonely_keyfield then
       
-      i += 1
-      keyfield = a[i][0][/\w+/]
+      # find the keyfield. if there's only 1 keyfield in all of the rows it's 
+      # not a keyfield. Keep searching until all rows have been searched
+      while a.select {|x| x[0][/^#{keyfield}/]}.length <= 1 and \
+                                                        i < a.length and a[i+1]
+        
+        i += 1
+        keyfield = a[i][0][/\w+/]
 
+      end
+      
     end
-
+    
     keyfield = a[0][0][/\w+/] if i == a.length - 1
 
     if a.flatten(1).grep(/^#{keyfield}/).length == 1 then # only 1 record
